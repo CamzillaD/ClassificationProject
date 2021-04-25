@@ -2,7 +2,7 @@ x1all = load('class_1','-ascii');
 x2all = load('class_2','-ascii');
 x3all = load('class_3','-ascii');
 
-% ATTRIBUTES: 
+% ATTRIBUTES: Sepal length, Sepal Width, Petal Length, Petal Width
 
 %Divide the data into test and training
 dataTraining = [x1all(1:30,:); x2all(1:30,:); x3all(1:30,:)];
@@ -11,24 +11,32 @@ dataTarget = [kron(ones(1,30),t1) kron(ones(1,30),t2) kron(ones(1,30),t3)];
 
 dataTest = [x1all(31:50,:); x2all(31:50,:); x3all(31:50,:)];
 
+% Dropping Sepal Width:
+dataTraining(:,4) = [];
+dataTest(:,4) = [];
+dataTraining(:,3) = [];
+dataTest(:,3) = [];
+dataTraining(:,1) = [];
+dataTest(:,1) = [];
+
 %constants
 C = 3;      % number of classes
-D = 4;      % number of attributes
+D = 1;      % number of attributes
 
-
-calculateNewW = false;  % line to decide if we want to calculate a new W each time we run the script
+tic
+calculateNewW = true;  % line to decide if we want to calculate a new W each time we run the script
 if calculateNewW
     W_0 = zeros(C,D);   % initial W
     w_0 = zeros(C, 1);  % initial w (offset)
     W = [W_0 w_0];
     alpha = 0.01;       % step length
     
-    steps = 200000      % iterations (amount of steps to take)
-    MSE_List = zeros(1,steps)
+    steps = 200000;      % iterations (amount of steps to take)
+    MSE_List = zeros(1,steps);
   
     for m = 1:steps    
         MSE = 0;
-        gradw_MSE = [0 0 0 0 0; 0 0 0 0 0; 0 0 0 0 0];
+        gradw_MSE = zeros(C,D+1);
         for k = 1:size(dataTraining,1)
             xk = [dataTraining(k,:)'; 1];
             gk = prediction(W, xk);
@@ -36,9 +44,10 @@ if calculateNewW
             MSE = MSE + 0.5*(gk-dataTarget(:,k)).'*(gk-dataTarget(:,k));
         end
         W = W - alpha*gradw_MSE;
-        MSE_List(1,m) = MSE
+        MSE_List(1,m) = MSE;
     end
 end
+toc
 
 % Prediction for the training data
 predTraining = zeros(90,3);

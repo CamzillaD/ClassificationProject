@@ -5,26 +5,26 @@ x3all = load('class_3','-ascii');
 % ATTRIBUTES: 
 
 %Divide the data into test and training
-dataTraining = [x1all(1:30,:); x2all(1:30,:); x3all(1:30,:)];
+dataTraining = [x1all(21:end,:); x2all(21:end,:); x3all(21:end,:)];
 t1 = [1; 0; 0]; t2 = [0; 1; 0]; t3 = [0; 0; 1];
 dataTarget = [kron(ones(1,30),t1) kron(ones(1,30),t2) kron(ones(1,30),t3)];
-
-dataTest = [x1all(31:50,:); x2all(31:50,:); x3all(31:50,:)];
+x
+dataTest = [x1all(1:20,:); x2all(1:20,:); x3all(1:20,:)];
 
 %constants
 C = 3;      % number of classes
 D = 4;      % number of attributes
 
 
-calculateNewW = false;  % line to decide if we want to calculate a new W each time we run the script
+calculateNewW = true;  % line to decide if we want to calculate a new W each time we run the script
 if calculateNewW
     W_0 = zeros(C,D);   % initial W
     w_0 = zeros(C, 1);  % initial w (offset)
     W = [W_0 w_0];
     alpha = 0.01;       % step length
     
-    steps = 200000      % iterations (amount of steps to take)
-    MSE_List = zeros(1,steps)
+    steps = 200000;      % iterations (amount of steps to take)
+    MSE_List = zeros(1,steps);
   
     for m = 1:steps    
         MSE = 0;
@@ -36,7 +36,7 @@ if calculateNewW
             MSE = MSE + 0.5*(gk-dataTarget(:,k)).'*(gk-dataTarget(:,k));
         end
         W = W - alpha*gradw_MSE;
-        MSE_List(1,m) = MSE
+        MSE_List(1,m) = MSE;
     end
 end
 
@@ -54,6 +54,8 @@ for i = 1:60
 end
 
 predClassTest = findClass(predTest, C);
+
+disp("Done")
 
 function predClass = findClass(predData, C)
 %UNTITLED2 Summary of this function goes here
@@ -73,8 +75,6 @@ predClass = zeros(dataSamples,C);
        predClass(i,c) = 1;
     end
 end
-
-
 
 
 
