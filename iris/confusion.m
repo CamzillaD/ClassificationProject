@@ -1,5 +1,6 @@
-C = 3;
+% Creating the confusion matrix with error rate
 
+C = 3;
 data = predClassTraining;
 class = zeros(1,size(data,1));
 
